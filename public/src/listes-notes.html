@@ -20,7 +20,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<!--<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">-->
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -102,12 +104,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </paper-dialog>
 
 
-    <iron-ajax
-            auto
-            url="/data/notes.json"
-            handle-as="json"
-            last-response="{{listesNotes}}"
-            debounce-duration="300"></iron-ajax>
+
+
+    <!--<iron-ajax-->
+            <!--auto-->
+            <!--url="/data/notes.json"-->
+            <!--handle-as="json"-->
+            <!--last-response="{{listesNotes}}"-->
+            <!--debounce-duration="300"></iron-ajax>-->
 
     <paper-button dialog-dismiss on-tap="reload">reload</paper-button>
 
@@ -128,6 +132,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </template>
 
+
+      <firebase-app
+              id="fbapp"
+              auth-domain="project.firebaseapp.com"
+              database-url="https://project.firebaseio.com"
+              api-key="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx"
+              storage-bucket="project.appspot.com"
+              >
+      </firebase-app>
+      <firebase-document
+              id="fbdoc"
+              path="/fullNotes"
+              data="{{listesNotes}}"
+              log
+              >
+      </firebase-document>
   </template>
 
   <script>

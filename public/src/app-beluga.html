@@ -8,6 +8,18 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
+<!--
+Version 1
+app-beluga# was created               1194
+app-beluga# has local DOM initialized 1329
+app-beluga# was attached              1493
+
+Version (useNativeCSSProperties: true)
+app-beluga# was created               1115
+app-beluga# has local DOM initialized 1231
+app-beluga# was attached              1347
+-->
+
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -141,7 +153,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _showPage404: function() {
         this.page = 'view404';
+      },
+
+      created: function() {
+        var temps = new Date() - window.xdmDepart;
+        console.log(this.localName + '#' + this.id + ' was created', temps);
+      },
+      ready: function() {
+        xdmMetric.end().log(); // Helper for logging the metric info to the console.
+        var temps = new Date() - window.xdmDepart;
+        console.log(this.localName + '#' + this.id + ' has local DOM initialized', temps);
+      },
+      attached: function() {
+        var temps = new Date() - window.xdmDepart;
+        console.log(this.localName + '#' + this.id + ' was attached', temps);
       }
+
     });
   </script>
 </dom-module>

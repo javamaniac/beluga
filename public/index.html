@@ -11,6 +11,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Test performance
+     appmetrics.min.js : overhead de 3 ms -->
+    <script src="bower_components/appmetrics.js/dist/appmetrics.min.js"></script>
+    <script>
+      window.xdmMetricFF = new Metric('fff');
+      xdmMetricFF.start();
+    </script>
+
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
@@ -46,11 +55,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="msapplication-TileColor" content="#3f51b5">
     <meta name="msapplication-tap-highlight" content="no">
 
+
     <script>
       // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
-        lazyRegister: true
+        lazyRegister: true,
+        useNativeCSSProperties: true
       };
 
       // Load webcomponentsjs polyfill if browser does not support native Web Components
@@ -90,6 +101,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           navigator.serviceWorker.register('/service-worker.js');
         });
       }
+
+      window.xdmMetric = new Metric('loadAppBeluge');
+      xdmMetric.start();
     </script>
 
     <link rel="import" href="/src/app-beluga.html">

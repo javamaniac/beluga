@@ -20,6 +20,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="listes-notes">
@@ -35,7 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 20px;
         margin: 10px;
         max-height: 200px;
-        overflow: auto;
+        overflow: hidden;
       }
 
       .note-mini h1 {
@@ -64,11 +66,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       paper-dialog#note .taches paper-checkbox {
         position: absolute; margin-top: 10px;
       }
-      paper-dialog#note .taches paper-textarea {
+      paper-dialog#note .taches paper-textarea,
+      paper-dialog#note .taches paper-input {
         margin-left: 30px;
       }
     </style>
-
 
 
     <!-- Édtition d'une note -->
@@ -81,18 +83,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <template is="dom-repeat" items="{{note.liste}}">
             <div>
               <paper-checkbox checked="{{item.archive}}"></paper-checkbox>
-              <paper-textarea no-label-float label="Tâche" value="{{item.texte}}"></paper-textarea>
+              <paper-input no-label-float label="Tâche" value="{{item.texte}}">
+                <!--<paper-icon-button suffix onclick="supprimerTache" icon="clear" alt="clear" title="clear">-->
+              </paper-input>
+              <paper-button on-tap="supprimerTache" data-args="{{item.index}}">{{item.index}} x</paper-button>
             </div>
+
           </template>
+          <!-- nouvel item -->
+          <paper-button on-tap="ajouterTache">+</paper-button>
         </div>
 
       </paper-dialog-scrollable>
       <div class="buttons">
-        <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm autofocus>Enregistrer</paper-button>
+        <!--<paper-button dialog-dismiss>Cancel</paper-button>-->
+        <paper-button dialog-confirm autofocus on-tap="enregistrer">Enregistrer</paper-button>
       </div>
     </paper-dialog>
 
+
+    <iron-ajax
+            auto
+            url="/data/notes.json"
+            handle-as="json"
+            last-response="{{listesNotes}}"
+            debounce-duration="300"></iron-ajax>
 
     <paper-button dialog-dismiss on-tap="reload">reload</paper-button>
 
@@ -119,49 +134,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'listes-notes',
       properties: {
-        listesNotes: {
-          notify: true,
-          value: [{
-            "titre": "Idées de cadeaux de Noël",
-            "date": "2016-08-06 12:00:33",
-            "note": "",
-            "liste": [
-              {
-                "texte": "Disque de musique",
-                "archive": false,
-                "date": "2016-08-12 12:00:33"
-              },{
-                "texte": "Livre de voyage",
-                "archive": true,
-                "date": "2016-08-11 12:00:33"
-              },{
-                "texte": "Gants chaud",
-                "archive": false,
-                "date": "2016-08-09 12:00:33"
-              }]
-          },{
-            "titre": "Film à voir",
-            "date": "2016-09-06 12:00:33",
-            "note": "",
-            "liste": [
-              {
-                "texte": "Captain Fantastic",
-                "archive": false,
-                "date": "2016-08-12 12:00:33"
-              },{
-                "texte": "Juste la fin du monde",
-                "archive": false,
-                "date": "2016-08-11 12:00:33"
-              }]
-          },{
-            "titre": "Lorem Ipsum",
-            "date": "2016-06-06 12:00:33",
-            "note": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nUt pretium massa in mollis auctor. Sed ac tortor fringilla, dignissim nisi nec, mollis ante. Morbi quis dolor sodales, vestibulum quam a, feugiat massa. Vestibulum placerat tortor sed nulla consequat, quis tincidunt ex interdum. Suspendisse bibendum mi sed nisi dapibus gravida. Mauris commodo vulputate vestibulum. Suspendisse vulputate lorem vel mollis egestas."
-          }]
-        },
-        note: {
-          type: Object
+        nouvelItem: {
+          value: {
+            titre: "",
+            date: "",
+            note: "",
+            liste: [{
+              texte: "",
+              archive: false,
+              date: ""
+            }]
+          }
         }
+      },
+      ajouterTache: function() {
+        this.push('note.liste', {
+          texte: "",
+          archive: false,
+          date: ""
+        });
+      },
+      supprimerTache: function(tt) {
+debugger;
+        console.log(tt.target.id);
+
+          var index = this.users.indexOf(user);
+          this.splice('users', index, 1);
+      },
+      enregistrer: function() {
+          this.reload();
       },
       observers: [
         'placeHandler(listesNotes.*.liste.*)'
